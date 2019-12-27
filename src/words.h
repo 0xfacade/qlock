@@ -1,5 +1,4 @@
 #include <array>
-
 using namespace std;
 
 const array<int, 5> ES_IST = {0, 19, 39, 40, 59};
@@ -16,6 +15,7 @@ const array<int, 4> M_HALB = {4, 15, 24, 35};
 
 // Stunden
 const array<int, 4> H_EINS = {5, 14, 25, 34};
+const array<int, 3> H_EIN = {5, 14, 25};
 const array<int, 4> H_ZWEI = {74, 85, 94, 105};
 const array<int, 4> H_DREI = {6, 13, 26, 33};
 const array<int, 4> H_VIER = {73, 86, 93, 106};

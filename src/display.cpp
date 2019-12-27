@@ -1,15 +1,12 @@
-#include <Arduino.h>
 #include <FastLED.h>
-
 #include <array>
-
 #include "words.h"
 
 FASTLED_USING_NAMESPACE
 
-#define DATA_PIN    26
-#define NUM_LEDS    110
-#define BRIGHTNESS          100
+#define DATA_PIN        26
+#define NUM_LEDS        110
+#define BRIGHTNESS      100
 
 CRGB leds[NUM_LEDS];
 
@@ -27,6 +24,7 @@ void addWord(const std::array<int, len> word) {
 }
 
 void displayTime(int hours, int minutes) {
+  clear();
   addWord(ES_IST);
 
   switch (minutes / 5) {
@@ -94,7 +92,11 @@ void displayTime(int hours, int minutes) {
       addWord(H_ZWOELF);
       break;
     case 1:
-      addWord(H_EINS);
+      if (minutes / 5 == 0) {
+        addWord(H_EIN);
+      } else {
+        addWord(H_EINS);
+      }
       break;
     case 2:
       addWord(H_ZWEI);
@@ -127,22 +129,12 @@ void displayTime(int hours, int minutes) {
       addWord(H_ELF);
       break;
   }
+
+  FastLED.show();
 }
 
-void setup() {
-  delay(500);
+void setupDisplay() {
   FastLED.addLeds<WS2812B,DATA_PIN,GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(BRIGHTNESS);
+  clear();
 }
-  
-void loop() {
-  for (int hour = 0; hour < 12; hour++) {
-    for (int minute = 0; minute < 60; minute += 5) {
-      clear();
-      displayTime(hour, minute);
-      FastLED.show();
-      FastLED.delay(5000);
-    }
-  }
-}
-
