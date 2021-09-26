@@ -11,41 +11,23 @@ RtcDS1302<ThreeWire> Rtc(myWire);
 
 void setupRTC() {
     Rtc.Begin();
-
     if (!Rtc.GetIsRunning()) {
         Serial.println("RTC was not actively running, starting now.");
         Rtc.SetIsRunning(true);
     }
 }
 
-void saveTimeToRTC(const int hours, const int minutes, const int seconds) {
-    if (Rtc.GetIsWriteProtected()) {
-        Serial.println("RTC was write protected, enabling writing now.");
-        Rtc.SetIsWriteProtected(false);
-    }
-    RtcDateTime t = RtcDateTime(2000, 1, 1, hours, minutes, seconds);
-    Rtc.SetDateTime(t);
+void saveTimeToRTC(const RtcDateTime& time) {
+    Rtc.SetIsWriteProtected(false);
+    Rtc.SetDateTime(time);
+    Rtc.SetIsWriteProtected(true);
 }
 
-bool getTimeFromRTC(int &hours, int &minutes) {
-    if (!Rtc.IsDateTimeValid()) {
-        // Common Causes:
-        //    1) first time you ran and the device wasn't running yet
-        //    2) the battery on the device is low or even missing
-        Serial.println("RTC lost confidence in the DateTime!");
-        return false;
-    }
-
-    RtcDateTime now = Rtc.GetDateTime();
-    hours = now.Hour();
-    minutes = now.Minute();
-
-    if (!now.IsValid())     {
-        // Common Causes:
-        //    1) the battery on the device is low or even missing and the power line was disconnected
-        Serial.println("RTC lost confidence in the DateTime!");
-        return false;
-    }
-
-    return true;
+RtcDateTime getTimeFromRTC() {
+    return Rtc.GetDateTime();
 }
+
+bool isRtcTrusted() {
+    return Rtc.IsDateTimeValid();
+}
+

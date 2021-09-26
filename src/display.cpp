@@ -1,6 +1,6 @@
 #include <FastLED.h>
 #include <array>
-#include "words.h"
+#include "words.hpp"
 
 FASTLED_USING_NAMESPACE
 
@@ -17,9 +17,9 @@ void clear() {
 }
 
 template<std::size_t len> 
-void addWord(const std::array<int, len> word) {
+void addWord(const std::array<int, len>& word) {
   for (int i = 0; i < len; i++) {
-    leds[word[i]] = CRGB::White;
+    leds[110 - word[i] - 1] = CRGB::White;
   }
 }
 

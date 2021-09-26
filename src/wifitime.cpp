@@ -2,30 +2,38 @@
 #include <WiFi.h>
 #include <NTPClient.h>
 #include <WiFiUdp.h>
-#include "creds.h"
 
-void getHoursMinutesFromWifi(int &hours, int &minutes, int &seconds) {
-    WiFiUDP ntpUDP;
-    NTPClient timeClient(ntpUDP);
+#include "creds.hpp"
 
-    Serial.print("Connecting to WiFi");
-    WiFi.begin(WIFI_NAME, WIFI_PASS);
+#define WIFI_CONNECT_TIMEOUT_SECONDS 20
 
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print(".");
-    }
 
-    timeClient.begin();
-    timeClient.setTimeOffset(3600);
+uint64_t getEpochFromWiFi() {
+  WiFiUDP ntpUDP;
+  NTPClient timeClient(ntpUDP);
 
-    while(!timeClient.update()) {
-        timeClient.forceUpdate();
-    }
+  Serial.print("Connecting to WiFi to get time..");
 
-    hours = timeClient.getHours();
-    minutes = timeClient.getMinutes();
-    seconds = timeClient.getSeconds();
+  WiFi.begin(WIFI_NAME, WIFI_PASS);
 
-    WiFi.disconnect();
+  int waiting_time_millis = 0;
+  while (WiFi.status() != WL_CONNECTED && waiting_time_millis < (WIFI_CONNECT_TIMEOUT_SECONDS * 1000)) {
+      delay(500);
+      Serial.print(".");
+      waiting_time_millis += 500;
+  }
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print("Failed to connect.");
+    return 0;
+  }
+
+  timeClient.begin();
+  timeClient.forceUpdate();
+
+  Serial.printf("Time is %s (epoch: %lu)", timeClient.getFormattedTime(), timeClient.getEpochTime());
+
+  WiFi.disconnect();
+
+  return timeClient.getEpochTime();
 }
