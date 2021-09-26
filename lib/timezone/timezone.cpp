@@ -66,3 +66,11 @@ bool isSummerTime(const RtcDateTime& time) {
   }
 }
 
+RtcDateTime getTimeInBerlin(const RtcDateTime& utc) {
+  if (isSummerTime(utc)) {
+    return utc + 2 * 60 * 60;
+  } else {
+    return utc + 1 * 60 * 60;
+  }
+}
+

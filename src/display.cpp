@@ -8,6 +8,8 @@ FASTLED_USING_NAMESPACE
 #define NUM_LEDS        110
 #define BRIGHTNESS      100
 
+#define REVERSE_ORDER
+
 CRGB leds[NUM_LEDS];
 
 void clear() {
@@ -19,11 +21,16 @@ void clear() {
 template<std::size_t len> 
 void addWord(const std::array<int, len>& word) {
   for (int i = 0; i < len; i++) {
+    #ifdef REVERSE_ORDER
     leds[110 - word[i] - 1] = CRGB::White;
+    #else
+    leds[word[i]] = CRGB::White;
+    #endif
   }
 }
 
-void displayTime(int hours, int minutes) {
+void displayTime(const int hoursIn, const int minutes) {
+  int hours = hoursIn;;
   clear();
   addWord(ES_IST);
 

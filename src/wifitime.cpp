@@ -7,7 +7,6 @@
 
 #define WIFI_CONNECT_TIMEOUT_SECONDS 20
 
-
 uint64_t getEpochFromWiFi() {
   WiFiUDP ntpUDP;
   NTPClient timeClient(ntpUDP);
@@ -24,14 +23,14 @@ uint64_t getEpochFromWiFi() {
   }
 
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.print("Failed to connect.");
+    Serial.println("Failed to connect.");
     return 0;
   }
 
   timeClient.begin();
   timeClient.forceUpdate();
 
-  Serial.printf("Time is %s (epoch: %lu)", timeClient.getFormattedTime(), timeClient.getEpochTime());
+  Serial.printf("Time is %s (epoch: %lu)\n", timeClient.getFormattedTime(), timeClient.getEpochTime());
 
   WiFi.disconnect();
 
